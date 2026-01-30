@@ -10,26 +10,46 @@ from bodies import Body
 # Gravitational constant
 G = 1e-4
 
+# Window size
+WIDTH = 1000
+HEIGHT = 1000
+
 
 class NBodySimulation:
     def __init__(
-        self, bodies: list[Body], fps: int = 60, title: str = "N-body simulation"
+        self, bodies: list[Body], fps: int = 60, title: str = "0-body simulation"
     ):
         self.bodies = bodies
 
         # Initialize simulation attributes
         pygame.init()
-        self.surface = pygame.display.set_mode((800, 800))
+        pygame.font.init()
+        self.surface = pygame.display.set_mode((WIDTH, HEIGHT))
         pygame.display.set_caption(title)
         self.fps = fps
         self.clock = Clock()
 
         # Place the center of mass of the system in the middle of the canvas
-        self._normalize_system()
+        if self.bodies:
+            self._normalize_system()
 
         # Used to check for mouse drag
         self.mouse_click_start = None
         self.line = None
+
+    def _render_explanation(self):
+        my_font = pygame.font.SysFont("Comic Sans MS", 30)
+        text_surface_drag = my_font.render(
+            "Drag mouse to add bodies to the problem.", False, (0, 0, 0)
+        )
+        text_surface_normalize = my_font.render(
+            "Press space bar to put the center of mass at the center of window.",
+            False,
+            (0, 0, 0),
+        )
+
+        self.surface.blit(text_surface_drag, (4, 4))
+        self.surface.blit(text_surface_normalize, (4, 30))
 
     def draw_center_of_mass(self):
         total_mass = sum(b.mass for b in self.bodies)
@@ -72,6 +92,11 @@ class NBodySimulation:
             if event.type == pygame.QUIT:
                 exit()
 
+            if event.type == pygame.KEYDOWN:
+                # Normalize the system when pressing the space bar
+                if event.key == 32:
+                    self._normalize_system()
+
             if event.type == pygame.MOUSEBUTTONDOWN:
                 self.mouse_click_start = event.pos
                 self.line = [event.pos, event.pos]
@@ -96,7 +121,8 @@ class NBodySimulation:
         )
 
         self.bodies.append(body)
-        # self._normalize_system()
+
+        pygame.display.set_caption(f"{len(self.bodies)}-body simulation")
 
     def draw_body(self, body: Body):
         circle(
@@ -147,6 +173,9 @@ class NBodySimulation:
         if self.line:
             self._draw_line()
 
+        # Render the explanation
+        self._render_explanation()
+
         pygame.display.update()
         self.clock.tick(self.fps)
 
@@ -156,8 +185,12 @@ class NBodySimulation:
             self.update()
 
 
-if __name__ == "__main__":
+def main():
     # Start with an empty simulation
-    simulation = NBodySimulation(bodies=[], fps=30)
+    simulation = NBodySimulation(bodies=[], fps=50)
 
     simulation.run()
+
+
+if __name__ == "__main__":
+    main()
