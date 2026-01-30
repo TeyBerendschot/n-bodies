@@ -17,3 +17,4 @@ dev = [
 [tool.setuptools]
 py-modules = ["__init__"]
 
+[tool.codespell]
