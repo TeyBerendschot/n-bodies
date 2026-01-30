@@ -3,6 +3,9 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
 
+# Virtual environment
+.venv
+
 # User-specific files
 *.rsuser
 *.suo
@@ -395,6 +398,9 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# VS Code settings
+.vscode
 
 # VS Code files for those working on multiple tools
 .vscode/*
