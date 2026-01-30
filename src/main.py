@@ -7,6 +7,9 @@ from pygame.draw import circle
 
 from bodies import Body
 
+# Gravitational constant
+G = 1e-4
+
 
 class NBodySimulation:
     def __init__(
@@ -18,7 +21,7 @@ class NBodySimulation:
 
         # Initialize simulation attributes
         pygame.init()
-        self.surface = pygame.display.set_mode((600, 600))
+        self.surface = pygame.display.set_mode((800, 800))
         self.fps = fps
         self.clock = Clock()
 
@@ -48,17 +51,18 @@ class NBodySimulation:
             / total_mass
         )
         surface_center = np.array(self.surface.get_size()) / 2
-
         translate_vector = surface_center - center_of_mass
 
-        total_momentum = np.sum([np.array([b.vx, b.vy]) for b in self.bodies], axis=0)
+        total_momentum = np.sum(
+            [b.mass * np.array([b.vx, b.vy]) for b in self.bodies], axis=0
+        )
 
         for b in self.bodies:
             b.x += translate_vector[0]
             b.y += translate_vector[1]
 
-            b.vx -= total_momentum[0] / len(self.bodies)
-            b.vy -= total_momentum[1] / len(self.bodies)
+            b.vx -= total_momentum[0] / total_mass
+            b.vy -= total_momentum[1] / total_mass
 
     def handle_events(self):
         for event in pygame.event.get():
@@ -76,13 +80,13 @@ class NBodySimulation:
     def update_velocities(self) -> None:
         # Calculate forces that act on the bodies
         for b1, b2 in combinations(self.bodies, 2):
-            v = np.array([b2.x - b1.x, b2.y - b1.y])
+            r = np.array([b2.x - b1.x, b2.y - b1.y])
 
             # The force that is applies to the bodies is proportional to mM/r^2
-            v = b1.mass * b2.mass * v / np.linalg.norm(v)
+            v = G * r / np.linalg.norm(r, ord=3)
 
-            b1.update_velocity(by=v)
-            b2.update_velocity(by=-v)
+            b1.update_velocity(by=v * b2.mass)
+            b2.update_velocity(by=-v * b1.mass)
 
     def update(self):
         # Handle any events
@@ -97,8 +101,9 @@ class NBodySimulation:
         # Draw circles
         for body in self.bodies:
             self.draw_body(body=body)
-            self.draw_center_of_mass()
             body.update_position()
+
+        self.draw_center_of_mass()
 
         pygame.display.update()
         self.clock.tick(self.fps)
@@ -113,20 +118,20 @@ if __name__ == "__main__":
     bodies = [
         Body(
             q=(0, 0),
-            radius=20,
-            p=(0, 4),
+            radius=10,
+            p=(0, -20),
         ),
         Body(
-            q=(300, 0),
+            q=(150, 0),
             radius=30,
-            p=(0, -4),
+            p=(-20, 20),
         ),
         Body(
-            q=(300, 400),
+            q=(150, 200),
             radius=25,
-            p=(0, -4),
+            p=(0, 20),
         ),
     ]
-    simulation = NBodySimulation(bodies=bodies, fps=40)
+    simulation = NBodySimulation(bodies=bodies, fps=30)
 
     simulation.run()

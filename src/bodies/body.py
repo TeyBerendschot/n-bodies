@@ -9,7 +9,7 @@ class Body:
         self.x = q[0]
         self.y = q[1]
         if mass is None:
-            mass = 5e-5 * radius**3
+            mass = radius**3
 
         self.mass: float = mass
         self.r = radius
