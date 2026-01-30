@@ -13,20 +13,23 @@ G = 1e-4
 
 class NBodySimulation:
     def __init__(
-        self,
-        bodies: list[Body],
-        fps: int = 60,
+        self, bodies: list[Body], fps: int = 60, title: str = "N-body simulation"
     ):
         self.bodies = bodies
 
         # Initialize simulation attributes
         pygame.init()
         self.surface = pygame.display.set_mode((800, 800))
+        pygame.display.set_caption(title)
         self.fps = fps
         self.clock = Clock()
 
         # Place the center of mass of the system in the middle of the canvas
-        self.move_center_of_mass_to_display_center()
+        self._normalize_system()
+
+        # Used to check for mouse drag
+        self.mouse_click_start = None
+        self.line = None
 
     def draw_center_of_mass(self):
         total_mass = sum(b.mass for b in self.bodies)
@@ -41,7 +44,7 @@ class NBodySimulation:
             radius=10,
         )
 
-    def move_center_of_mass_to_display_center(self) -> None:
+    def _normalize_system(self) -> None:
         """Calculate the center of mass and put it in the center of the display surface.
 
         Also calculates the velocity relative to the surface and subtracts this from each body"""
@@ -69,6 +72,32 @@ class NBodySimulation:
             if event.type == pygame.QUIT:
                 exit()
 
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                self.mouse_click_start = event.pos
+                self.line = [event.pos, event.pos]
+
+            if self.mouse_click_start and event.type == pygame.MOUSEMOTION:
+                self.line[1] = event.pos
+
+            if event.type == pygame.MOUSEBUTTONUP:
+                self._add_body()
+                self.mouse_click_start = None
+                self.line = None
+
+    def _get_radius_from_line(self):
+        return np.sqrt(np.linalg.norm(np.array(self.line[1]) - np.array(self.line[0])))
+
+    def _add_body(self):
+        """Add a new body to the system based on user input."""
+        body = Body(
+            q=self.line[0],
+            radius=self._get_radius_from_line(),
+            p=tuple((np.array(self.line[1]) - np.array(self.line[0])) / 20),
+        )
+
+        self.bodies.append(body)
+        # self._normalize_system()
+
     def draw_body(self, body: Body):
         circle(
             surface=self.surface,
@@ -88,12 +117,23 @@ class NBodySimulation:
             b1.update_velocity(by=v * b2.mass)
             b2.update_velocity(by=-v * b1.mass)
 
-    def update(self):
-        # Handle any events
-        self.handle_events()
+    def _draw_line(self):
+        pygame.draw.line(self.surface, (0, 255, 0), self.line[0], self.line[1], width=4)
 
+        # Draw a circle of which the size is proportional to the length of the line
+        circle(
+            self.surface,
+            (100, 100, 100),
+            center=self.line[0],
+            radius=self._get_radius_from_line(),
+        )
+
+    def update(self):
         # Start with a fresh canvas each frame
         self.surface.fill((255, 255, 255))
+
+        # Handle any events
+        self.handle_events()
 
         # Update the velocities of the bodies
         self.update_velocities()
@@ -103,7 +143,9 @@ class NBodySimulation:
             self.draw_body(body=body)
             body.update_position()
 
-        self.draw_center_of_mass()
+        # Draw line if mouse is down
+        if self.line:
+            self._draw_line()
 
         pygame.display.update()
         self.clock.tick(self.fps)
@@ -115,23 +157,7 @@ class NBodySimulation:
 
 
 if __name__ == "__main__":
-    bodies = [
-        Body(
-            q=(0, 0),
-            radius=10,
-            p=(0, -20),
-        ),
-        Body(
-            q=(150, 0),
-            radius=30,
-            p=(-20, 20),
-        ),
-        Body(
-            q=(150, 200),
-            radius=25,
-            p=(0, 20),
-        ),
-    ]
-    simulation = NBodySimulation(bodies=bodies, fps=30)
+    # Start with an empty simulation
+    simulation = NBodySimulation(bodies=[], fps=30)
 
     simulation.run()
