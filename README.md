@@ -1,4 +1,12 @@
 # n-bodies
+<p align="center">
+<img src=".github/gifs/output.gif" width="300" height="300" />
+</p>
+<p align="center">
+Example simulation
+</p>
+
+
 
 A simulation using the `pygame` package of the gravitational interaction between several sheprical bodies of mass.
 

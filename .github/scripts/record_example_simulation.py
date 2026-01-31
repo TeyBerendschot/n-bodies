@@ -2,10 +2,10 @@ from bodies import Body
 from simulation import NBodySimulation
 from record import PygameRecord
 
-FPS = 60
-N_FRAMES = 90
+FPS = 40
+N_FRAMES = 1000
 
-with PygameRecord("./.github/gifs/output.gif", FPS, n_frames=90) as recorder:
+with PygameRecord("./.github/gifs/output.gif", FPS, n_frames=N_FRAMES) as recorder:
     bodies = [
         Body(
             q=(0, 0),
