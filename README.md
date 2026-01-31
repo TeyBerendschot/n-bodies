@@ -1,6 +1,6 @@
 # n-bodies
 <p align="center">
-<img src=".github/gifs/output.gif" width="300" height="300" />
+<img src=".github/gifs/output.gif" width="500" height="500" />
 </p>
 <p align="center">
 Example simulation (generated automatically using <a href="https://gist.github.com/RicardoRibeiroRodrigues/9c40f36909112950860a410a565de667">PygameRecorder</a>)

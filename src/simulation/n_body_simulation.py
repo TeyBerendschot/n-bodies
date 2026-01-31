@@ -126,6 +126,7 @@ class NBodySimulation:
             q=self.line[0],
             radius=self._get_radius_from_line(),
             p=tuple((np.array(self.line[1]) - np.array(self.line[0])) / 20),
+            color=tuple(np.random.choice(range(256), size=3)),
         )
 
         self.bodies.append(body)
@@ -135,9 +136,9 @@ class NBodySimulation:
     def draw_body(self, body: Body):
         circle(
             surface=self.surface,
-            color=(0, 0, 0),
             center=(body.x, body.y),
             radius=body.r,
+            color=body.color,
         )
 
     def update_velocities(self) -> None:
@@ -200,3 +201,10 @@ class NBodySimulation:
                     return
 
             self.update()
+
+
+if __name__ == "__main__":
+    # Start with an empty simulation
+    simulation = NBodySimulation(bodies=[], fps=50)
+
+    simulation.run()
