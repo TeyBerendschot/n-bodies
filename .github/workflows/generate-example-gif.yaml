@@ -5,7 +5,7 @@ on:
     branches: [main]
 
 jobs:
-  setup project:
+  generate-gif:
     name: install project dependencies
     runs-on: ubuntu-latest
 
@@ -18,10 +18,6 @@ jobs:
       - name: Install the project
         run: uv sync --locked --all-extras --dev
 
-  generate-gif:
-    name: Generate example simulation gif
-    runs-on: ubuntu-latest
-    steps: 
       - name: Generate gif
         run: | 
           python3 ./.github.scripts.record_example.py
