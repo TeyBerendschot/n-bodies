@@ -20,4 +20,4 @@ jobs:
 
       - name: Generate gif
         run: | 
-          python3 .github/scripts/record_example.py
+          python3 .github/scripts/record_example_simulation.py
