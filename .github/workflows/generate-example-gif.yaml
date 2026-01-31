@@ -23,7 +23,10 @@ jobs:
           uv run python3 .github/scripts/record_example_simulation.py
 
       - name: Commit generated gif
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          git remote set-url --push origin https://TeyBerendschot:$GITHUB_TOKEN@github.com/TeyBerendschot/n-bodies
           git config --global user.name 'Gifbot'
           git config --global user.email 'Gifbot@users.noreply.github.com'
           git commit -am "Automatically generate gif"
