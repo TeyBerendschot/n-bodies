@@ -3,7 +3,7 @@
 <img src=".github/gifs/output.gif" width="300" height="300" />
 </p>
 <p align="center">
-Example simulation
+Example simulation (generated automatically using [`PygameRecorder`][https://gist.github.com/RicardoRibeiroRodrigues/9c40f36909112950860a410a565de667])
 </p>
 
 
