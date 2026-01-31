@@ -126,7 +126,6 @@ class NBodySimulation:
             q=self.line[0],
             radius=self._get_radius_from_line(),
             p=tuple((np.array(self.line[1]) - np.array(self.line[0])) / 20),
-            color=tuple(np.random.choice(range(256), size=3)),
         )
 
         self.bodies.append(body)

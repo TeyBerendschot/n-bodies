@@ -1,3 +1,6 @@
+import numpy as np
+
+
 class Body:
     def __init__(
         self,
@@ -5,7 +8,7 @@ class Body:
         radius: float,
         mass: float | None = None,
         p: tuple[float, float] = (0.0, 0.0),
-        color: tuple[int, int, int] = (0, 0, 0),
+        color: tuple[int, int, int] | None = None,
     ):
         self.x = q[0]
         self.y = q[1]
@@ -17,7 +20,11 @@ class Body:
         self.vx = p[0]
         self.vy = p[1]
 
-        self.color = color
+        self.color = color if color else self._generate_random_color()
+
+    @staticmethod
+    def _generate_random_color():
+        return tuple(np.random.choice(range(256), size=3))
 
     def update_velocity(self, by: tuple[float, float] = (0.0, 0.0)) -> None:
         self.vx += by[0]
