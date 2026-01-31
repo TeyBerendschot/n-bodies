@@ -21,3 +21,10 @@ jobs:
       - name: Generate gif
         run: | 
           uv run python3 .github/scripts/record_example_simulation.py
+
+      - name: Commit generated gif
+        run: |
+          git config --global user.name 'Gifbot'
+          git config --global user.email 'Gifbot@users.noreply.github.com'
+          git commit -am "Automatically generate gif"
+          git push

@@ -194,7 +194,6 @@ class NBodySimulation:
             if self.recorder:
                 self.recorder.add_frame()
                 self.recorder.n_frames -= 1
-                print(self.recorder.n_frames)
                 if self.recorder.n_frames == 0:
                     self.recorder.save()
                     pygame.quit()
