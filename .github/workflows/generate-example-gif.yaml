@@ -1,0 +1,26 @@
+name: Generate gif
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  setup project:
+    name: install project dependencies
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+
+      - name: Install the project
+        run: uv sync --locked --all-extras --dev
+
+  generate-gif:
+    name: Generate example simulation gif
+    steps: 
+      - name: Generate gif
+        run: | 
+          python3 ./.github.scripts.record_example.py
